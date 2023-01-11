@@ -1,6 +1,6 @@
-FROM node:lts-alpine
+FROM node:lts-alpine as build
 
-WORKDIR .
+WORKDIR /srv
 
 COPY package.json ./
 COPY package-lock.json ./
@@ -8,10 +8,9 @@ COPY package-lock.json ./
 RUN npm install
 RUN npm install react-scripts@3.4.3 -g
 
-CMD ["pwd"]
 COPY . ./
 
-EXPOSE 3000
+RUN npm run build --omit=dev
 
-CMD ["npm", "start"]
-
+FROM nginx:alpine
+COPY --from=build /srv/build/ /usr/share/nginx/html
