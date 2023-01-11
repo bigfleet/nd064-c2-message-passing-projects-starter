@@ -4,7 +4,10 @@ metadata:
   name: udaconnect-ingress
   # annotations:
   #   cert-manager.io/cluster-issuer: <%= issuer_provider %>-<%= cluster_name %>
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
+  ingressClassName: nginx
   rules:
     - host: "localhost"
       http:
@@ -29,4 +32,4 @@ spec:
               service: 
                 name: udaconnect-app
                 port:
-                  number: 5000
+                  number: 3000
