@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: udaconnect-ingress
+  # annotations:
+  #   cert-manager.io/cluster-issuer: <%= issuer_provider %>-<%= cluster_name %>
+spec:
+  rules:
+    - host: "localhost"
+      http:
+        paths:
+          - pathType: Prefix
+            path: /api/persons/(.*)/connections
+            backend:
+              service: 
+                name: udaconnect-connection-api
+                port:
+                  number: 5000
+          - pathType: Prefix
+            path: /api/persons/(.*)
+            backend:
+              service: 
+                name: udaconnect-api
+                port:
+                  number: 5000
+          - pathType: Prefix
+            path: /(.*)
+            backend:
+              service: 
+                name: udaconnect-app
+                port:
+                  number: 5000
