@@ -14,14 +14,35 @@ spec:
       http:
         paths:
           - pathType: Prefix
-            path: /udaconnect/api/persons/(.+)/connections
+            path: /udaconnect(/api/persons/\d*/connection/?)
             backend:
               service: 
                 name: udaconnect-connection-api
                 port:
                   number: 5000
           - pathType: Prefix
-            path: /udaconnect(/api/persons|/api/locations)(/\d*$)?
+            path: /udaconnect(/api/persons/\d*/?)
+            backend:
+              service: 
+                name: udaconnect-api
+                port:
+                  number: 5000
+          - pathType: Prefix
+            path: /udaconnect(/api/locations/\d*/?)
+            backend:
+              service: 
+                name: udaconnect-api
+                port:
+                  number: 5000
+          - pathType: Prefix
+            path: /udaconnect(/api/persons/?)
+            backend:
+              service: 
+                name: udaconnect-api
+                port:
+                  number: 5000
+          - pathType: Prefix
+            path: /udaconnect(/api/locations/?)
             backend:
               service: 
                 name: udaconnect-api
