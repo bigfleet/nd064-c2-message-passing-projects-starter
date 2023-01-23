@@ -21,7 +21,7 @@ class Connection extends Component {
   getConnections = (personId) => {
     if (personId) {
       fetch(
-        `${window.location.protocol}//${window.location.host}/api/persons/${personId}/connection?start_date=2020-01-01&end_date=2020-12-30&distance=5`
+        `./api/persons/${personId}/connection?start_date=2020-01-01&end_date=2020-12-30&distance=5`
       )
         .then((response) => response.json())
         .then((connections) =>

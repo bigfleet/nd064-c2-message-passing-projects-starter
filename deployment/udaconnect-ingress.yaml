@@ -6,28 +6,29 @@ metadata:
   #   cert-manager.io/cluster-issuer: <%= issuer_provider %>-<%= cluster_name %>
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
-    - host: "localhost"
+    - host: "udaconnect.10.0.0.47.sslip.io"
       http:
         paths:
           - pathType: Prefix
-            path: /api/persons/(.*)/connections
+            path: /udaconnect/api/persons/(.+)/connections
             backend:
               service: 
                 name: udaconnect-connection-api
                 port:
                   number: 5000
           - pathType: Prefix
-            path: /api/persons/(.*)
+            path: /udaconnect/api/persons/(.+)
             backend:
               service: 
                 name: udaconnect-api
                 port:
                   number: 5000
           - pathType: Prefix
-            path: /(.*)
+            path: /udaconnect(/|$)(.*)
             backend:
               service: 
                 name: udaconnect-app
