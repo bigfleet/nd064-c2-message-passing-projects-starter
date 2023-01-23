@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from app.udaconnect.models import Location, Person
+from app.udaconnect.models import Location
 from app.udaconnect.schemas import (
-    LocationSchema,
-    PersonSchema,
+    LocationSchema
 )
 from app.udaconnect.services import LocationService
 from flask import request

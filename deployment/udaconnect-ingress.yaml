@@ -31,7 +31,7 @@ spec:
             path: /udaconnect(/api/locations/\d*/?)
             backend:
               service: 
-                name: udaconnect-api
+                name: udaconnect-location-api
                 port:
                   number: 5000
           - pathType: Prefix
@@ -45,7 +45,7 @@ spec:
             path: /udaconnect(/api/locations/?)
             backend:
               service: 
-                name: udaconnect-api
+                name: udaconnect-location-api
                 port:
                   number: 5000
           - pathType: Prefix
