@@ -4,6 +4,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
 
+from flask import g
 from app import db
 from app.udaconnect.models import Location
 from app.udaconnect.schemas import LocationSchema
@@ -33,20 +34,14 @@ class LocationService:
             logger.warning(f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
 
-        new_location = Location()
-        new_location.person_id = location["person_id"]
-        new_location.creation_time = location["creation_time"]
-        new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-
-        logging.debug("new location: %r", new_location)
+        logging.debug("location: %r", location)
         # Turn order_data into a binary string for Kafka
-        kafka_data = json.dumps(new_location).encode()
+        kafka_data = json.dumps(location).encode()
         # Kafka producer has already been set up in Flask context
-        kafka_producer = g.kafka_producer
         logging.debug("data: %r", kafka_data)
-        kafka_producer.send("orders", kafka_data)
+        g.producer.send(g.topic, kafka_data)
         
         # db.session.add(new_location)
         # db.session.commit()
 
-        return new_location
+        return location
