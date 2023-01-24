@@ -1,4 +1,5 @@
 import json
+import os
 import logging, sys
 
 from kafka import KafkaProducer
@@ -17,7 +18,12 @@ def create_app(env=None):
 
     app = Flask(__name__)
     app.config.from_object(config_by_name[env or "test"])
-    app.config.from_prefixed_env()
+    # We'd have to upgrade Flash to get access to this-- I'm no pythonista
+    #app.config.from_prefixed_env()
+
+    app.config["KAFKA_SERVER"] = os.environ["FLASK_KAFKA_SERVER"]
+    app.config["KAFKA_TOPIC"] = os.environ["FLASK_KAFKA_TOPIC"]
+    DB_NAME = os.environ["DB_NAME"]
     api = Api(app, title="UdaConnect API", version="0.1.0")
 
     CORS(app)  # Set CORS for development
