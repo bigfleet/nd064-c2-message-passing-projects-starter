@@ -35,6 +35,16 @@ spec:
         name: udaconnect-location-api
         imagePullPolicy: Always
         env:
+        - name: FLASK_KAFKA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-env
+              key: FLASK_KAFKA_HOST
+        - name: FLASK_KAFKA_TOPIC
+          valueFrom:
+            configMapKeyRef:
+              name: db-env
+              key: FLASK_KAFKA_TOPIC
         - name: DB_USERNAME
           valueFrom:
             configMapKeyRef:
