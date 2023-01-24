@@ -1,3 +1,5 @@
+import json
+
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
@@ -35,7 +37,16 @@ class LocationService:
         new_location.person_id = location["person_id"]
         new_location.creation_time = location["creation_time"]
         new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-        db.session.add(new_location)
-        db.session.commit()
+
+        logging.debug("new location: %r", new_location)
+        # Turn order_data into a binary string for Kafka
+        kafka_data = json.dumps(new_location).encode()
+        # Kafka producer has already been set up in Flask context
+        kafka_producer = g.kafka_producer
+        logging.debug("data: %r", kafka_data)
+        kafka_producer.send("orders", kafka_data)
+        
+        # db.session.add(new_location)
+        # db.session.commit()
 
         return new_location
