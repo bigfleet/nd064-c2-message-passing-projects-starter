@@ -1,10 +1,12 @@
 import json
+import os
 
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
 
-from flask import g
+from kafka import KafkaProducer
+
 from app import db
 from app.udaconnect.models import Location
 from app.udaconnect.schemas import LocationSchema
@@ -36,10 +38,12 @@ class LocationService:
 
         logging.debug("location: %r", location)
         # Turn order_data into a binary string for Kafka
-        kafka_data = json.dumps(location).encode()
+        kafka_data = json.dumps(location)
         # Kafka producer has already been set up in Flask context
         logging.debug("data: %r", kafka_data)
-        g.producer.send(g.topic, kafka_data)
+        producer = KafkaProducer(bootstrap_servers=os.environ["FLASK_KAFKA_SERVER"])
+        topic    = os.environ["FLASK_KAFKA_TOPIC"]
+        producer.send(topic, kafka_data)
         
         # db.session.add(new_location)
         # db.session.commit()

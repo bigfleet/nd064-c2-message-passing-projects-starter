@@ -2,8 +2,6 @@ import json
 import os
 import logging, sys
 
-from . import kafka
-
 from flask import Flask, jsonify, request, g, Response
 from flask_cors import CORS
 from flask_restx import Api
@@ -20,8 +18,6 @@ def create_app(env=None):
     # We'd have to upgrade Flash to get access to this-- I'm no pythonista
     #app.config.from_prefixed_env()
 
-    app.config["KAFKA_SERVER"] = os.environ["FLASK_KAFKA_SERVER"]
-    app.config["KAFKA_TOPIC"] = os.environ["FLASK_KAFKA_TOPIC"]
     DB_NAME = os.environ["DB_NAME"]
     api = Api(app, title="UdaConnect API", version="0.1.0")
 
@@ -29,8 +25,6 @@ def create_app(env=None):
 
     register_routes(api, app)
     db.init_app(app)
-
-    kafka.init_app(app)
 
     @app.route("/health")
     def health():
