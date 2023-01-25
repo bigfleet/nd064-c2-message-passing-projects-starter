@@ -1,26 +1,43 @@
-# Architectural Design Comments
+# Design Comments
 
-## Fly React Fly or Running To Stand Still
+## Architecture
 
-React doesn't want to live in a node process on a kubernetes cluster; React wants ultimately to live inside a user's browser, delivered there ideally in a static asset bundle with a bunch of minimized node modules packaged alongside.
+In this section, we want to take about the shape of our software solution, regardless of what the application is doing.  Some of these practices won't be able to continue with a kubernetes deployment target, so let's get those dealt with and see what's left for our application to do.
 
-Even if during this exercize we won't be implementing sending the whole app to a CDN, we can still package a static build, for practice.
+### Running To Stand Still
+
+React doesn't want to live in a node process on a kubernetes cluster; React wants ultimately to live inside a user's browser, delivered there (ideally) in a static asset bundle with a bunch of minimized node modules packaged alongside.
+
+Even if during this exercize we won't be implementing sending the whole app to a CDN, we can still package a static build.
+
+#### Impact 
 
 We can see that our Progressive Web App implementation right now relies on the processes' `NODE_ENV`, which won't work the same in our static bundling.  We assume that the conversation concluded to the mutual satisfaction of all parties that PWA might be temporarily suspended as we figure out how exactly to re-enable it.
 
-## Localhost and CORS
 
-Front-end can't use localhost any more, since we are headed towards production.
+### Localhost and CORS
 
-Signing TLS/SSL certs isn't something we want to tangle with, so we'll see if we can alter our queries in a reasonable way.
+We need a way for our requests to be routed without attaching CORS, and so that they can successfully be delivered to the various pods.
 
-## API Gateway <3's OpenAPI
+Front-end can't use localhost any more, since we are headed towards production and onto a cluster.  So as far as issuing the requests, we will make them relative to where the app root was in the first place.  Fortunately, our static build makes this straightforward.
 
-Since we know that we'll be in the business of producing OpenAPI endpoints, basically every cloud provider has a good capability to deliver a CDN that can also perform routing _at least_, and can even do some authentication and authorization screens for us.
+Regarding the routing, while in an actual cloud environment we'd be using something like Cloudfront and AWS API Gateway (other clouds have their own examples), since we're doing this on a local cluster, we'll train a Kubernetes ingress to perform our routing once the request gets to the pods.
 
-We also won't do that here, but we'll make sure the steps we do take are compatible.
+## Application considerations
 
-## Connection Service needs help
+### Microservice isolations
+
+From our existing api service tier, we will split out connection and location services.  Connection service is very heavy, and may need to perform specialized work over time in order to succeed in its function.  Location service is likely to be where some prep work as done.  In particular, the ability to perform deferred work outside the request/response cycle as we move forward would be welcome.
+
+### Location architecture
+
+Per project guidance, we're meant to introduce kafka behind the location creation endpoint, in the case of valid new locations.  
+
+Topic listeners write to the database and can perform any other activity.  That means location will need an API endpoint and some additional software aimed at picking up from the Kafka topic and writing to the database.
+
+As we've taken in the JSON and now are free to model Location data conveniently, a binary envelope is a good fit for kafka.  We can introduce protobufs here.
+
+### Connection Service needs help
 
 Our Connection Service currently performs the following:
 
@@ -31,8 +48,12 @@ Our Connection Service currently performs the following:
 
 At scale, this will be a performance hotspot in more than one way.  Loading all people into object graph memory is going to be a problem; local heap is not where you want this residing in RAM.
 
-Further, we have a hard binding now regarding PostGIS and the specifics of location checkin.  It would be reasonable to use our work on the Location object to begin sending that over the wire in order to power our solution.
+Since this is "cloud native architecture" and not "Intermediate PostGIS wizardry", I would give my implementation teams the guidance to evaluate the following:
 
-## Location service can be internal
+* An internal /locations/<location_id>/nearby endpoint that captures nearby locations on the basis of a 'distance' parameter.
+  * Optionally, it could also take begin and end date parameters
+* Introduction of a redis or other object cache that would be in position to provide people data with multiple keys and a single lookup.
+  * Can be a good write-through cache target, and easy enough to load from the DB if redis fails.
 
-Our front-end is currently calling people and connections.  That is fine with us!  We can keep our location service internal.
+This combination cuts down significantly on the number of queries and process memory.
+
