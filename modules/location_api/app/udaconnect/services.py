@@ -1,6 +1,8 @@
 import json
 import os
 
+from dateutil.parser import parse
+
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
@@ -43,7 +45,7 @@ class LocationService:
         # Turn location data into a binary sequence for Kafka
         kafka_data = location_pb2.LocationMessage(
                person_id=int(location["person_id"]),
-               creation_time=location["creation_time"],
+               creation_time=parse(location["creation_time"], fuzzy=True).isoformat(),
                latitude=float(location["latitude"]),
                longitude=float(location["longitude"])
            ).SerializeToString()
@@ -52,8 +54,13 @@ class LocationService:
         producer = KafkaProducer(bootstrap_servers=os.environ["FLASK_KAFKA_SERVER"])
         topic    = os.environ["FLASK_KAFKA_TOPIC"]
         producer.send(topic, kafka_data)
+
+        # new_location = Location()
+        # new_location.person_id = location["person_id"]
+        # new_location.creation_time = location["creation_time"]
+        # new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
         
         # db.session.add(new_location)
         # db.session.commit()
 
-        return location
+        return '{"result": "ok"}'
