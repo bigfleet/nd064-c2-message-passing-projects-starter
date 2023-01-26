@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "c4fbe10f-3468-4e1a-ba5d-1afef9f15507",
+		"name": "udaconnect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List People",
+			"protocolProfileBehavior": {
+				"strictSSL": false
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{path}}/api/persons",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{path}}",
+						"api",
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Person Detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{path}}/api/persons/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{path}}",
+						"api",
+						"persons",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Person",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"company_name\": \"{{$randomCompanyName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/{{path}}/api/persons",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{path}}",
+						"api",
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Location detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{path}}/api/locations/29",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{path}}",
+						"api",
+						"locations",
+						"29"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a location",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const moment = require('moment');",
+							"pm.globals.set(\"today\", moment().format(\"YYYY-MM-DD \"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"person_id\": \"9\",\n    \"longitude\": \"{{$randomLongitude}}\",\n    \"latitude\": \"{{$randomLatitude}}\",\n    \"creation_time\": \"2020-07-07 10:38:06.000000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/{{path}}/api/locations",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{path}}",
+						"api",
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get connections",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{path}}/api/persons/6/connection?start_date=2020-01-01&end_date=2020-12-31&distance=5",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{path}}",
+						"api",
+						"persons",
+						"6",
+						"connection"
+					],
+					"query": [
+						{
+							"key": "start_date",
+							"value": "2020-01-01"
+						},
+						{
+							"key": "end_date",
+							"value": "2020-12-31"
+						},
+						{
+							"key": "distance",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://udaconnect.10.0.0.47.sslip.io:8080/",
+			"type": "default"
+		},
+		{
+			"key": "path",
+			"value": "udaconnect",
+			"type": "default"
+		}
+	]
+}

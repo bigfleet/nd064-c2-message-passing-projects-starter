@@ -16,10 +16,10 @@ The completed project must include:
 
 # Submission checklist
 
-[ ] Plan the message passing strategies based on the business requirements for UdaConnect
+[X] Plan the message passing strategies based on the business requirements for UdaConnect
 [X] Create a diagram of your microservice architecture showing the services and message passing strategies
 [X] Write a 2-3 sentence justification for each strategy, either on the design diagram or in a separate document
 [X] Refactor the starter code into a microservice architecture
 [X] Provide OpenAPI documentation for API endpoints
-[ ] Create a Postman library for REST endpoints that you created or modified
-[ ] Take screenshots of the pod and services deployments
+[X] Create a Postman library for REST endpoints that you created or modified
+[X] Take screenshots of the pod and services deployments

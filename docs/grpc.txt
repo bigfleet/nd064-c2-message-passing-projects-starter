@@ -1,0 +1,5 @@
+# gRPC Overview
+
+There is no independent gRPC service in the architecture.
+
+The REST endpoint for location creation dispatches a protobuf message onto the kafka queue.
