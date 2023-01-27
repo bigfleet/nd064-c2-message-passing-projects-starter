@@ -6,7 +6,7 @@ RUN apk add --no-cache gcc musl-dev linux-headers geos libc-dev postgresql-dev b
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-EXPOSE 5000
+RUN apk add --no-cache vim
 
 COPY . .
-CMD ["flask", "run", "--host", "0.0.0.0"]
+CMD ["sleep", "infinity"]
