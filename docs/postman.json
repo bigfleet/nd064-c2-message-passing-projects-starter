@@ -194,7 +194,7 @@
 	"variable": [
 		{
 			"key": "host",
-			"value": "http://udaconnect.10.0.0.47.sslip.io:8080/",
+			"value": "http://udaconnect.10.0.0.12.sslip.io:8080/",
 			"type": "default"
 		},
 		{

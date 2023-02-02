@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "udaconnect.10.0.0.47.sslip.io"
+    - host: "udaconnect.10.0.0.12.sslip.io"
       http:
         paths:
           - pathType: Prefix
