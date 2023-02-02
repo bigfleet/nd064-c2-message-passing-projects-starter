@@ -1,1 +1,1 @@
-podman push bigfleet/udaconnect-location-api:latest
+podman push bigfleet/udaconnect-location-consumer:latest
