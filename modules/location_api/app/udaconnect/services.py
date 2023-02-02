@@ -14,6 +14,7 @@ from app.udaconnect.models import Location
 from app.udaconnect.schemas import LocationSchema
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
+from shapely import wkb, wkt
 
 import location_pb2
 import location_pb2_grpc
@@ -42,12 +43,14 @@ class LocationService:
             raise Exception(f"Invalid payload: {validation_results}")
 
         logging.debug("location: %r", location)
+        g = wkt.loads(f"POINT({location['longitude']} {location['latitude']})")
         # Turn location data into a binary sequence for Kafka
         kafka_data = location_pb2.LocationMessage(
                person_id=int(location["person_id"]),
                creation_time=parse(location["creation_time"], fuzzy=True).isoformat(),
                latitude=float(location["latitude"]),
-               longitude=float(location["longitude"])
+               longitude=float(location["longitude"]),
+               coordinate=wkb.dumps(g, hex=True, srid=4326)
            ).SerializeToString()
         
         logging.debug("data: %r", kafka_data)
