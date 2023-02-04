@@ -23,6 +23,10 @@ Front-end can't use localhost any more, since we are headed towards production a
 
 Regarding the routing, while in an actual cloud environment we'd be using something like Cloudfront and AWS API Gateway (other clouds have their own examples), since we're doing this on a local cluster, we'll train a Kubernetes ingress to perform our routing once the request gets to the pods.
 
+### Encryption and DNS
+
+For the purposes of this exercize, targeting a local kubernetes cluster, involving DNS is a problem.  Guaranteeing routability from the outside world to allow, e.g., LetsEncrypt to issue TLS certs is a problem as well.  For our purposes, we will define a loopback DNS name in as few places as we can, and accept that our traffic is not encrypted.
+
 ## Application considerations
 
 ### Microservice isolations
@@ -57,3 +61,12 @@ Since this is "cloud native architecture" and not "Intermediate PostGIS wizardry
 
 This combination cuts down significantly on the number of queries and process memory.
 
+## Operations considerations
+
+### Database access
+
+The location API and the connection API could receive database credentials that were read-only.  I am treating the issuance of those credentials as outside the scope of the exercize.  A specialized PostgreSQL container image could receive a seed SQL script that provisioned these users, but that would not map to any production push for this application.
+
+### Connection API database access
+
+In the target architecture diagram, the connection API could use other microservices.  Today's implementation team (aka bigfleet) is too poor a python programmer to replace DB access with HTTP request for data transfer.  :-O :-D
